@@ -10,13 +10,18 @@ class Driver
   end
 
   def run
-    i=0
-    File.readlines('input/passwords_10000_small.txt').each do |line|
-      i+=1
+    files = `ls input/passwords/password_*`
+    files.strip.split("\n").each do |file_name|
+      File.readlines(file_name).each do |line|
+        begin
+          process_line(line)
+        rescue ArgumentError => e
+          # Catch the execption for invalid byte sequence in UTF-8
+          # Do nothing
+        end
+      end
 
-      puts line.inspect
-      process_line(line)
-      break if i >= 300
+      puts "Completed #{file_name}"
     end
 
     print_stats
